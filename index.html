@@ -1,44 +1,104 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Social Media Post App</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Echo Social</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark">E</div>
+          <span>twitter</span>
+        </div>
 
-    <!-- Link CSS File -->
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+        <label class="search-box" aria-label="Search">
+          <span>🔎</span>
+          <input type="text" placeholder="Search" />
+        </label>
 
-    <div class="app">
+        <div class="topbar-actions">
+          <button class="icon-btn" aria-label="Notifications">🔔</button>
+          <div class="profile-pill">
+            <div class="avatar small">A</div>
+            <span>Alice</span>
+          </div>
+        </div>
+      </header>
 
-        <h1>Social Media App</h1>
+      <main class="layout">
+        <aside class="sidebar left-sidebar">
+          <nav class="menu-list">
+            <a class="menu-item active" href="#">🏠 Home</a>
+            <a class="menu-item" href="#">🔍 Explore</a>
+            <a class="menu-item" href="#">🔔 Notifications</a>
+            <a class="menu-item" href="#">💬 Messages</a>
+            <a class="menu-item" href="#">🔖 Bookmarks</a>
+            <a class="menu-item" href="#">👤 Profile</a>
+          </nav>
 
-        <!-- Search Posts -->
-        <input
-            type="text"
-            id="search"
-            placeholder="Search posts..."
-            onkeyup="searchPosts()"
-        >
+          <div class="sidebar-card">
+            <h3>Stay inspired</h3>
+            <p>Share your day, connect with friends, and keep the conversation going.</p>
+            <button class="primary-btn">Create Post</button>
+          </div>
+        </aside>
 
-        <!-- Create Post -->
-        <textarea
-            id="postText"
-            placeholder="What's on your mind?"
-            rows="4"
-        ></textarea>
+        <section class="feed-column">
+          <div class="composer-card">
+            <div class="composer-head">
+              <div class="avatar">A</div>
+              <div>
+                <h3>What's happening?</h3>
+                <p>Share an update with your friends.</p>
+              </div>
+            </div>
 
-        <button onclick="addPost()">Create Post</button>
+            <textarea id="tweetInput" rows="3" placeholder="Write your post..."></textarea>
+            <div class="composer-footer">
+              <span class="helper-text">Keep it short and clear</span>
+              <button id="postBtn" class="primary-btn">Post</button>
+            </div>
+          </div>
 
-        <!-- Display Posts -->
-        <div id="posts"></div>
+          <div id="feed" class="feed-list"></div>
+        </section>
 
+        <aside class="sidebar right-sidebar">
+          <div class="sidebar-card">
+            <h3>Trending now</h3>
+            <ul class="list-stack">
+              <li><span>#DesignTips</span><small>24k posts</small></li>
+              <li><span>#MorningCoffee</span><small>14k posts</small></li>
+              <li><span>#Productivity</span><small>9.2k posts</small></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-card">
+            <h3>Who to follow</h3>
+            <div class="suggestion-item">
+              <div class="avatar">J</div>
+              <div>
+                <strong>Shree ram</strong>
+                <p>@wannabeyours</p
+              </div>
+              <button class="follow-btn">Follow</button>
+            </div>
+            <div class="suggestion-item">
+              <div class="avatar">S</div>
+              <div>
+                <strong>paivthra</strong>
+                <p>@paivthra</p>
+              </div>
+              <button class="follow-btn">Follow</button>
+            </div>
+          </div>
+        </aside>
+      </main>
     </div>
 
-    <!-- Link JavaScript File -->
     <script src="script.js"></script>
-
-</body>
+  </body>
 </html>
