@@ -1,66 +1,125 @@
-```javascript
-let posts = [];
+// Sample tweet data shown when the page loads.
+const tweets = [
+  {
+    id: 1,
+    name: 'Vetrivel P R',
+    handle: '@vetri',
+    time: '2h',
+    text: 'Coffee, soft music, and a quiet plan for the day. Simple habits still matter.',
+    likes: 81,
+    comments: 8,
+    reposts: 7,
+    liked: false,
+    image: true,
+  },
+  {
+    id: 2,
+    name: 'Sri Ram',
+    handle: '@invinsible',
+    time: '5h',
+    text: 'Just finished a long walk and the ideas started flowing again. That is always a good sign.',
+    likes: 71,
+    comments: 94,
+    reposts: 333,
+    liked: true,
+    image: false,
+  },
+];
 
-function addPost() {
-    let text = document.getElementById("postText").value;
+const feed = document.getElementById('feed');
+const tweetInput = document.getElementById('tweetInput');
+const postBtn = document.getElementById('postBtn');
 
-    if (text.trim() == "") {
-        alert("Write something!");
-        return;
-    }
+function renderTweets() {
+  feed.innerHTML = '';
 
-    posts.unshift({
-        text: text,
-        likes: 0
-    });
+  tweets.forEach((tweet) => {
+    const card = document.createElement('article');
+    card.className = 'tweet-card';
 
-    document.getElementById("postText").value = "";
-    displayPosts(posts);
+    card.innerHTML = `
+      <div class="tweet-top">
+        <div class="user-row">
+          <div class="avatar">${tweet.name.charAt(0)}</div>
+          <div class="user-meta">
+            <strong>${tweet.name}</strong>
+            <p>${tweet.handle} • ${tweet.time}</p>
+          </div>
+        </div>
+        <span class="meta-label">⋯</span>
+      </div>
+
+      <p class="tweet-text">${tweet.text}</p>
+      ${tweet.image ? '<div class="image-placeholder">SUNSET MOMENTS</div>' : ''}
+      <div class="actions-row">
+        <button class="action-btn ${tweet.liked ? 'active' : ''}" data-action="like" data-id="${tweet.id}">💙 <span>${tweet.likes}</span></button>
+        <button class="action-btn" data-action="comment" data-id="${tweet.id}">💬 <span>${tweet.comments}</span></button>
+        <button class="action-btn">🔁 <span>${tweet.reposts}</span></button>
+        <button class="action-btn">📤 <span>Share</span></button>
+      </div>
+    `;
+
+    feed.appendChild(card);
+  });
 }
 
-function displayPosts(data) {
-    let output = "";
+function createNewTweet() {
+  const text = tweetInput.value.trim();
 
-    data.forEach((post, index) => {
-        output += `
-            <div class="post">
-                <p>${post.text}</p>
+  if (!text) {
+    tweetInput.focus();
+    return;
+  }
 
-                <button class="like"
-                    onclick="likePost(${index})">
-                    ❤️ ${post.likes}
-                </button>
+  const newTweet = {
+    id: Date.now(),
+    name: 'You',
+    handle: '@you',
+    time: 'now',
+    text,
+    likes: 0,
+    comments: 0,
+    reposts: 0,
+    liked: false,
+    image: false,
+  };
 
-                <button class="delete"
-                    onclick="deletePost(${index})">
-                    Delete
-                </button>
-            </div>
-        `;
-    });
-
-    document.getElementById("posts").innerHTML = output;
+  tweets.unshift(newTweet);
+  tweetInput.value = '';
+  renderTweets();
 }
 
-function likePost(index) {
-    posts[index].likes++;
-    displayPosts(posts);
+function handleFeedClick(event) {
+  const button = event.target.closest('button[data-action]');
+
+  if (!button) return;
+
+  const id = Number(button.getAttribute('data-id'));
+  const action = button.getAttribute('data-action');
+  const tweet = tweets.find((item) => item.id === id);
+
+  if (!tweet) return;
+
+  if (action === 'like') {
+    tweet.liked = !tweet.liked;
+    tweet.likes += tweet.liked ? 1 : -1;
+  }
+
+  if (action === 'comment') {
+    tweet.comments += 1;
+  }
+
+  renderTweets();
 }
 
-function deletePost(index) {
-    posts.splice(index, 1);
-    displayPosts(posts);
-}
+postBtn.addEventListener('click', createNewTweet);
+tweetInput.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault();
+    createNewTweet();
+  }
+});
 
-function searchPosts() {
-    let search =
-        document.getElementById("search").value.toLowerCase();
+feed.addEventListener('click', handleFeedClick);
 
-    let result = posts.filter(post =>
-        post.text.toLowerCase().includes(search)
-    );
-
-    displayPosts(result);
-}
-```
-
+renderTweets();
