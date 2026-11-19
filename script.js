@@ -1,125 +1,54 @@
-// Sample tweet data shown when the page loads.
-const tweets = [
-  {
-    id: 1,
-    name: 'Vetrivel P R',
-    handle: '@vetri',
-    time: '2h',
-    text: 'Coffee, soft music, and a quiet plan for the day. Simple habits still matter.',
-    likes: 81,
-    comments: 8,
-    reposts: 7,
-    liked: false,
-    image: true,
-  },
-  {
-    id: 2,
-    name: 'Sri Ram',
-    handle: '@invinsible',
-    time: '5h',
-    text: 'Just finished a long walk and the ideas started flowing again. That is always a good sign.',
-    likes: 71,
-    comments: 94,
-    reposts: 333,
-    liked: true,
-    image: false,
-  },
+const products = [
+  { name: "Canvas Backpack", description: "A handy everyday bag.", price: 899, emoji: "🎒" },
+  { name: "Water Bottle", description: "Reusable stainless steel bottle.", price: 399, emoji: "🧴" },
+  { name: "Desk Lamp", description: "A bright lamp for your workspace.", price: 749, emoji: "💡" },
+  { name: "Notebook Set", description: "Three notebooks for your ideas.", price: 249, emoji: "📒" }
 ];
 
-const feed = document.getElementById('feed');
-const tweetInput = document.getElementById('tweetInput');
-const postBtn = document.getElementById('postBtn');
+const cart = [];
 
-function renderTweets() {
-  feed.innerHTML = '';
+function showProducts() {
+  const productList = document.getElementById("product-list");
 
-  tweets.forEach((tweet) => {
-    const card = document.createElement('article');
-    card.className = 'tweet-card';
-
-    card.innerHTML = `
-      <div class="tweet-top">
-        <div class="user-row">
-          <div class="avatar">${tweet.name.charAt(0)}</div>
-          <div class="user-meta">
-            <strong>${tweet.name}</strong>
-            <p>${tweet.handle} • ${tweet.time}</p>
-          </div>
-        </div>
-        <span class="meta-label">⋯</span>
-      </div>
-
-      <p class="tweet-text">${tweet.text}</p>
-      ${tweet.image ? '<div class="image-placeholder">SUNSET MOMENTS</div>' : ''}
-      <div class="actions-row">
-        <button class="action-btn ${tweet.liked ? 'active' : ''}" data-action="like" data-id="${tweet.id}">💙 <span>${tweet.likes}</span></button>
-        <button class="action-btn" data-action="comment" data-id="${tweet.id}">💬 <span>${tweet.comments}</span></button>
-        <button class="action-btn">🔁 <span>${tweet.reposts}</span></button>
-        <button class="action-btn">📤 <span>Share</span></button>
-      </div>
-    `;
-
-    feed.appendChild(card);
-  });
+  productList.innerHTML = products.map((product, index) => `
+    <article class="product-card">
+      <div class="emoji">${product.emoji}</div>
+      <h3>${product.name}</h3>
+      <p>${product.description}</p>
+      <p class="price">₹${product.price}</p>
+      <button type="button" onclick="addToCart(${index})">Add to cart</button>
+    </article>
+  `).join("");
 }
 
-function createNewTweet() {
-  const text = tweetInput.value.trim();
+function addToCart(index) {
+  cart.push(products[index]);
+  updateCart();
+}
 
-  if (!text) {
-    tweetInput.focus();
+function updateCart() {
+  const cartItems = document.getElementById("cart-items");
+
+  cartItems.innerHTML = cart.map(item =>
+    `<li>${item.name} — ₹${item.price}</li>`
+  ).join("");
+
+  const total = cart.reduce((sum, item) => sum + item.price, 0);
+  document.getElementById("cart-total").textContent = total;
+  document.getElementById("cart-count").textContent = cart.length;
+}
+
+document.getElementById("checkout").addEventListener("click", () => {
+  const message = document.getElementById("message");
+
+  if (cart.length === 0) {
+    message.textContent = "Your cart is empty. Add a product first.";
     return;
   }
 
-  const newTweet = {
-    id: Date.now(),
-    name: 'You',
-    handle: '@you',
-    time: 'now',
-    text,
-    likes: 0,
-    comments: 0,
-    reposts: 0,
-    liked: false,
-    image: false,
-  };
-
-  tweets.unshift(newTweet);
-  tweetInput.value = '';
-  renderTweets();
-}
-
-function handleFeedClick(event) {
-  const button = event.target.closest('button[data-action]');
-
-  if (!button) return;
-
-  const id = Number(button.getAttribute('data-id'));
-  const action = button.getAttribute('data-action');
-  const tweet = tweets.find((item) => item.id === id);
-
-  if (!tweet) return;
-
-  if (action === 'like') {
-    tweet.liked = !tweet.liked;
-    tweet.likes += tweet.liked ? 1 : -1;
-  }
-
-  if (action === 'comment') {
-    tweet.comments += 1;
-  }
-
-  renderTweets();
-}
-
-postBtn.addEventListener('click', createNewTweet);
-tweetInput.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter' && !event.shiftKey) {
-    event.preventDefault();
-    createNewTweet();
-  }
+  message.textContent = "Demo order placed. Thank you for shopping!";
+  cart.length = 0;
+  updateCart();
 });
 
-feed.addEventListener('click', handleFeedClick);
-
-renderTweets();
+showProducts();
